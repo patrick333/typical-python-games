@@ -16,7 +16,7 @@ bulletHeight=10
 blockCount=0
 blockAddRate=6
 
-screenSpeed=5
+screenSpeed=3
 bulletSpeed=5
 FPS=40
 
@@ -41,7 +41,7 @@ def waitForPlayerToPressKey():
                 if event.key == K_ESCAPE: # pressing escape quits
                     end()
                 return
-                
+              
 def drawText(text, font, surface, x, y):
     textobj = font.render(text, 1, textColor)
     textrect = textobj.get_rect()
@@ -133,6 +133,7 @@ all_sprites_list.add(player)
 clock = pygame.time.Clock()
 
 score = 0
+topScore=0
 player.rect.y = height-playerHeight-10
 
 drawText('RAIDEN', font, screen, (width / 3), (height / 3))
@@ -157,7 +158,7 @@ while True:
                 # Fire a bullet if the user clicks the mouse button
                 bullet = Bullet(bulletWidth, bulletHeight)
                 # Set the bullet so it is where the player is
-                bullet.rect.x = player.rect.x
+                bullet.rect.x = player.rect.x+player.rect.width//2
                 bullet.rect.y = player.rect.y
                 # Add the bullet to the lists
                 all_sprites_list.add(bullet)
@@ -186,14 +187,13 @@ while True:
         # Calculate mechanics for each bullet
         for bullet in bullet_list:
             # See if it hit a block
-            block_hit_list = pygame.sprite.spritecollide(bullet, block_list, True)
+            block_hit_list = pygame.sprite.spritecollide(bullet, block_list, True) #note the "True"
             
             # For each block hit, remove the bullet and add to the score
             for block in block_hit_list:
                 bullet_list.remove(bullet)
                 all_sprites_list.remove(bullet)
                 score += 1
-                #print( score )
                 
             # Remove the bullet if it flies up off the screen
             if bullet.rect.y < -bulletHeight:
@@ -204,6 +204,9 @@ while True:
     
         # Clear the screen
         screen.fill(black)
+        
+        drawText('Score: %s' % (score), font, screen, 10, 0)
+        drawText('Top Score: %s' % (topScore), font, screen, 10, 40)
             
         # Draw all the spites
         all_sprites_list.draw(screen)
@@ -211,13 +214,21 @@ while True:
         # Go ahead and update the screen with what we've drawn.
         pygame.display.flip()
         
+        # check if any block has touched the player
+        player_hit_list = pygame.sprite.spritecollide(player, block_list, True)
+        if player_hit_list:
+            if score>topScore:
+                topScore = score
+            break    
+        
         # --- Limit to 20 frames per second
         clock.tick(FPS)
-        
+    
+    pygame.mixer.music.stop()    
     gameOverSound.play()
 
-    drawText('GAME OVER', font, windowSurface, (width / 3), (height / 3))
-    drawText('Press a key to play again...', font, windowSurface, (width / 3) - 80, (height / 3) + 50)
+    drawText('GAME OVER', font, screen, (width / 3), (height / 3))
+    drawText('Press a key to play again...', font, screen, (width / 3) - 80, (height / 3) + 50)
     pygame.display.update()
     waitForPlayerToPressKey()
 
