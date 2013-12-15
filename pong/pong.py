@@ -39,7 +39,6 @@ textColor = (250, 250, 255)
 
 
 speedYlimit=10
-
 FPS=40
 
 def end():
@@ -147,15 +146,31 @@ while True:
     ball.setSpeed(ballSpeedX,ballSpeedY)
 
     pygame.mixer.music.play(-1, 0.0)
+    paused=False
     while True:  #game loop when the game is playing.
         for event in pygame.event.get(): 
             if event.type == pygame.QUIT: 
                 end();       
             elif event.type == KEYUP:    
                 if event.key == K_ESCAPE:
-                        end()   
+                    end()   
+                elif event.key == K_s:    
+                    paused=not paused  
     
         # --- Game logic
+        if paused==True:
+            if pygame.mixer.music.get_busy(): #playing
+                pygame.mixer.music.stop()  
+                print("paused")
+            drawText('GAME Paused', font, screen, (width / 3), (height / 3))
+            drawText('Press S to continue...', font, screen, (width / 3) - 80, (height / 3) + 50)
+            pygame.display.update()       
+            continue
+        else:
+            if not pygame.mixer.music.get_busy():  #get_busy=True: playing. Here, not playing. 
+                print("music paused, now unpause it.")
+                pygame.mixer.music.play(-1, 0.0)
+        
         #opp follow the ball's movement
         opp.rect.centery=ball.rect.centery
    
