@@ -32,12 +32,12 @@ black    = (   0,   0,   0)
 white    = ( 255, 255, 255)
 red      = ( 255,   0,   0)
 blue     = (   0,   0, 255)
+purple = (159, 0, 197)
+
 bgColor= (0,   0,   0)
 textColor = (250, 250, 255)
 
-ballSpeedX=-8
-ballSpeedY=-2
-#ballSpeedY=0
+
 speedYlimit=10
 
 FPS=40
@@ -92,21 +92,28 @@ class Ball(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self) 
 
         self.image = pygame.Surface([width, height])
-        self.image.fill(white)
+        self.image.fill(purple)
         self.rect = self.image.get_rect()
         
     def setSpeed(self, speedX, speedY):    
         self.speedX=speedX
         self.speedY=speedY
-    def update(self):    
-        self.rect.move_ip(self.speedX, self.speedY)
+    def update(self):           
         if self.rect.top<padV or self.rect.top>height-padV:
+            if self.rect.top<padV:
+                self.rect.top=padV
+            else:
+                self.rect.top=height-padV     
             self.speedY=-self.speedY
-
+        self.rect.move_ip(self.speedX, self.speedY)    
 
 pygame.init()
 screen = pygame.display.set_mode([width,height])
 pygame.display.set_caption('Pong')
+
+frameImage=pygame.image.load('frame.jpg')
+frame=frameImage.get_rect()
+frame.center=(width//2, height//2)
 
 # game resources setup
 font = pygame.font.SysFont(None, 48)
@@ -135,6 +142,8 @@ while True:
     player.rect.center=(player.rect.width//2, height//2)
     opp.rect.center=(width-opp.rect.width//2, height//2)
     ball.rect.center=(width//2, height//2)
+    ballSpeedX=random.randint(-9,-5)
+    ballSpeedY=random.randint(-3,3)
     ball.setSpeed(ballSpeedX,ballSpeedY)
 
     pygame.mixer.music.play(-1, 0.0)
@@ -151,16 +160,13 @@ while True:
         opp.rect.centery=ball.rect.centery
    
         # Call the update() method on all the sprites
-        all_sprites_list.update()
-           
-        
-
+        all_sprites_list.update()               
             
         # --- Draw a frame
     
         # Clear the screen
         screen.fill(bgColor)      
-            
+        screen.blit(frameImage, frame)
 
         all_sprites_list.draw(screen)
 
@@ -176,10 +182,8 @@ while True:
         if player_hit or opp_hit:
             hitSound.play()
             ball.speedX=-ball.speedX
-            if player_hit:                
-                #print(r[0],end=' ')
-                #print(r[1])
-                ball.speedY+=r[1]
+            if player_hit:     
+                ball.speedY+=r[1]//3
                 if ball.speedY>speedYlimit:
                     ball.speedY=speedYlimit
                 elif ball.speedY<-speedYlimit:
