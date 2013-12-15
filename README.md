@@ -1,6 +1,9 @@
-raiden
+Typical python games
 ======
 
-Arcade game Raiden
+This is a project using python 3 and pygame to implement some popular kinds of games, esp. the classic arcade games (e.g. Raiden)
 
-This is a project using python 3 and pygame to implement a classic arcade game like Raiden. 
+A list of games is shown as follows:
+Pong
+brickbreaker
+Raiden
