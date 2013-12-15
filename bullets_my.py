@@ -10,8 +10,8 @@ blockWidth=20
 blockHeight=15
 playerWidth=20
 playerHeight=20
-bulletWidth=4
-bulletHeight=10
+bulletWidth=2
+bulletHeight=2
 
 blockCount=0
 blockAddRate=6
@@ -28,6 +28,7 @@ black    = (   0,   0,   0)
 white    = ( 255, 255, 255)
 red      = ( 255,   0,   0)
 blue     = (   0,   0, 255)
+bgColor= (0,   0,   0)
 textColor = (250, 250, 255)
 
 
@@ -74,9 +75,14 @@ class Player(pygame.sprite.Sprite):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self) 
 
-        self.image = pygame.Surface([width, height])
-        self.image.fill(red)
-
+        #self.image = pygame.Surface([width, height])
+        #self.image.fill(red)
+        image=pygame.image.load('basic_plane.png')
+        imageRect=image.get_rect()
+        image= pygame.transform.scale(image, (imageRect.right//2, imageRect.bottom//2))
+        image=image.convert()
+        self.image = image
+        self.image.set_colorkey(white)
         self.rect = self.image.get_rect()
         
     def update(self):
@@ -228,7 +234,7 @@ while True:
         # --- Draw a frame
     
         # Clear the screen
-        screen.fill(black)      
+        screen.fill(bgColor)      
             
         # Draw all the spites
         all_sprites_list.draw(screen)
