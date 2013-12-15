@@ -252,7 +252,6 @@ while True:
                 topScore = score
             break    
         
-        # --- Limit to 20 frames per second
         clock.tick(FPS)
     
     pygame.mixer.music.stop()    
