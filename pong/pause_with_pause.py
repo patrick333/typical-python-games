@@ -32,13 +32,13 @@ def drawText(text, font, surface, x, y):
 pygame.init()
 screen = pygame.display.set_mode([width,height])
 
-pygame.mixer.music.load('background.mid')  
+pygame.mixer.music.load('a.ogg')  
 font = pygame.font.SysFont(None, 48)
 
 clock = pygame.time.Clock()
 
 pygame.mixer.music.play(-1, 0.0)
-pygame.mixer.music.set_volume(0.5)
+#pygame.mixer.music.set_volume(0.5)
 paused=False
 while True:  #game loop when the game is playing.    
     if not pygame.mixer.music.get_busy(): #is not playing
@@ -51,8 +51,8 @@ while True:  #game loop when the game is playing.
                 end()   
             elif event.key == K_s:    
                 print("pause.")
-                #pygame.mixer.music.pause() 
-                pygame.mixer.music.stop()
+                pygame.mixer.music.pause() 
+                #pygame.mixer.music.stop()
 
     
     screen.fill(bgColor)

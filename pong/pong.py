@@ -120,7 +120,8 @@ scoreFont=pygame.font.SysFont("arial,tahoma", 20, True, True)
 
 gameOverSound = pygame.mixer.Sound('gameover.wav')
 hitSound=pygame.mixer.Sound('basic_hit.wav')
-pygame.mixer.music.load('background.mid')  
+#pygame.mixer.music.load('background.mid')
+pygame.mixer.music.load('background.mp3')    
 
 
 all_sprites_list = pygame.sprite.Group()
@@ -155,12 +156,29 @@ while True:
                 if event.key == K_ESCAPE:
                     end()   
                 elif event.key == K_s:    
+                    if not paused:#pause it now
+                        pygame.mixer.music.pause()
+                        #playTime=pygame.mixer.music.get_pos()
+                        #pygame.mixer.music.stop()
+                    else:
+                        pygame.mixer.music.unpause()  
+                        #pygame.mixer.music.set_pos(playTime)
+                        #pygame.mixer.music.start()  
                     paused=not paused  
+                    
+        
     
         # --- Game logic
-        if paused==True:
+        if paused:
+            drawText('GAME Paused', font, screen, (width / 3), (height / 3))
+            drawText('Press S to continue...', font, screen, (width / 3) - 80, (height / 3) + 50)
+            pygame.display.update()       
+            continue
+        '''
+        if paused:
             if pygame.mixer.music.get_busy(): #playing
-                pygame.mixer.music.stop()  
+                #pygame.mixer.music.stop()  
+                pygame.mixer.music.pause()  
                 print("paused")
             drawText('GAME Paused', font, screen, (width / 3), (height / 3))
             drawText('Press S to continue...', font, screen, (width / 3) - 80, (height / 3) + 50)
@@ -169,7 +187,9 @@ while True:
         else:
             if not pygame.mixer.music.get_busy():  #get_busy=True: playing. Here, not playing. 
                 print("music paused, now unpause it.")
-                pygame.mixer.music.play(-1, 0.0)
+                #pygame.mixer.music.play(-1, 0.0)
+                pygame.mixer.music.unpause()
+        '''
         
         #opp follow the ball's movement
         opp.rect.centery=ball.rect.centery
