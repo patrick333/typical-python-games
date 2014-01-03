@@ -19,6 +19,7 @@ margin = 0
 nColumn=10 
 nRow=25
 
+
 colorDict={0:cyan, 1:yellow, 2:purple, 3:green, 4:red, 5:blue, 6:orange}
 
 
@@ -42,11 +43,16 @@ class Block(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft=topleft
         self.rate=0
+        self.boolStill=False
     def update(self):
+        
+            
+            
         self.rate+=1
-        if self.rate>=20:
+        if self.rate>=4:
             self.rect.y+=height
             self.rate=0
+        
 
 class Tetromino():
     def __init__(self,mode,angle): #angle: 0,1,2,3.
@@ -169,14 +175,11 @@ pygame.init()
 
 size = [width*nColumn+margin*(nColumn+1), height*nRow+margin*(nRow+1)]
 screen = display.set_mode(size)
-all_sprites = sprite.Group()
-
+still_sprites=sprite.Group()
 
 display.set_caption("My Tetris")
 
 clock = time.Clock()
-step=2;
-
 
 readyForNext=True
 mode=random.randint(0,6)
@@ -193,23 +196,32 @@ while True:
                     end()
                     
     screen.fill(black)
-    '''
+    
     if readyForNext: #generate a new tetro
         mode=random.randint(0,6)
         angle=random.randint(0,3)
         tetro=Tetromino(mode,angle)
         
-        tetro.group.draw(screen)
         readyForNext=False
-    '''
+
+    tetro.group.update()
     tetro.group.draw(screen)
-
-    #all_sprites.add(tetro.group)
-    #all_sprites.draw(screen)
+    still_sprites.draw(screen)
     
-     
+    #collision test between tetro and stillGroup+walls.
+    for s in tetro.group:
+        if s.rect.bottom>=size[1] or sprite.spritecollide(s, still_sprites, False):
+            readyForNext=True
+            #update still_sprites
+            still_sprites.add(tetro.group)
+            
+    if readyForNext:
+        for s in tetro.group:
+            s.boolStill=True
+            
+    #hit_list=sprite.spritecollide(tetro, block_list, True)
 
-    clock.tick(10)
+    clock.tick(30)
  
     # Go ahead and update the screen with what we've drawn.
     display.update()
